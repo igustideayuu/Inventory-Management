@@ -258,7 +258,7 @@
           <td><input type="text" placeholder="Nama Barang"></td>
 
         <td>
-          <input list="kode-mata-anggaran" id="kodeAnggaran" placeholder="5211 B. Listrik" oninput="tampilkanKodeDanArti()">
+          <input list="kode-mata-anggaran" id="kodeAnggaran" placeholder="5211 B. Listrik">
           <datalist id="kode-mata-anggaran">
             <option value="5211 B. Listrik">
             <option value="5212 B. Air">
@@ -423,7 +423,7 @@ function kirimData() {
     data.push(item);
   }
   
-  fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd‑ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
     method: "POST",
     headers: {
       "Content-Type": "text/plain;charset=utf-8"
