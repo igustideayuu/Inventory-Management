@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bukti Penerimaan Barang</title>
+  <style>
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 15mm;
+      }
+      .no-print {
+        display: none;
+      }
+      input, button {
+        border: none;
+        background: none;
+      }
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 19px;
+      gap: 50px;
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+    }
+
+    .left-column {
+      width: 35%;
+      min-width: 300px;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      
+    }
+
+    .left-column .label-row label {
+      display: inline-block;
+      font-weight: bold;
+      width: 350px; /* atau lebih besar jika teks panjang */
+      white-space: nowrap; /* <<< Supaya teks tidak terpotong */
+    }
+    .right-column {
+      width:40%;
+      padding-left: 100px;
+    }
+
+    .right-column .label-row label {
+      width: 100px; /* Diperkecil agar input tidak terlalu jauh */
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .label-row input {
+      flex: 1;
+      border: none;
+      padding: 2px;
+      min-width: 120px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 4px;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .signatures td {
+      border: none;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .kanan-atas {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      text-align: left;
+    }
+
+    .kanan-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .label-kanan {
+      min-width: 100px;
+    }
+
+    .titik-dua {
+      display: inline-block;
+      width: 10px;
+      text-align: center;
+    }
+    .titik-duaa {
+      display: inline-block;
+      width: 2px;        /* Sesuaikan jika ingin lebih longgar */
+      text-align: center;
+      margin-right: 2px;  /* Opsional, biar ada jarak ke input */
+    }
+
+    .kanan-row input {
+      border: none;
+      border-bottom: 1px dotted gray;
+      width: 120px;
+    }
+    .col-label {
+      min-width: 320px;  /* disamakan agar semua titik dua sejajar */
+      font-weight: normal;
+    }
+
+    .col-input {
+      flex: 1;
+    }
+
+    .col-input input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px dotted gray;
+      font-size: 13px;
+    }
+
+
+    @media print {
+      body {
+        margin: 10mm;
+      }
+
+      input {
+        border: none;
+      }
+
+      .left-column .label-row label,
+      .right-column .label-row label {
+        white-space: nowrap !important;
+      }
+
+      .label-row {
+        break-inside: avoid;
+      }
+    }
+
+    
+  </style>
+</head>
+<body>
+
+  <div class="no-print">
+    <button onclick="window.print()">Cetak PDF</button>
+    <button onclick="tambahBaris()">Tambah Baris</button>
+    <button onclick="hapusBarisTerakhir()">Hapus Baris</button>
+    <button onclick="kirimData()">Kirim ke Spreadsheet</button>
+  </div>
+
+  <div class="kanan-atas">
+    <div class="kanan-row">
+      <span class="label-kanan">Lampiran</span><span class="titik-dua">:</span><span><input type="text" placeholder=" "></span>
+    </div>
+    <div class="kanan-row">
+      <span class="label-kanan">Formulir No.</span><span class="titik-dua">:</span><span><input type="text" placeholder=" "></span>
+    </div>
+  </div>
+
+  <div class="header-kiri">PERUM JASA TIRTA II<br>UNIT WILAYAH III</div>
+  <h2>BUKTI PENERIMAAN BARANG / BAHAN</h2>
+<div class="info-row">
+  <div class="left-column">
+    <div class="label-row">
+      <div class="col-label">Pemasok</div>
+      <div class="titik-dua">:</div>
+      <div class="col-input"><input type="text" placeholder="Nama Pemasok"></div>
+    </div>
+    <div class="label-row">
+      <div class="col-label">BA No.</div>
+      <div class="titik-dua">:</div>
+      <div class="col-input"><input type="text" placeholder="..."></div>
+    </div>
+    <div class="label-row">
+      <div class="col-label">Bukti Pembelian/Nota/Kwitansi/S-Perj.No.</div>
+      <div class="titik-dua">:</div>
+      <div class="col-input"><input type="text" placeholder="..."></div>
+    </div>
+    <div class="label-row">
+      <div class="col-label">Jumlah Rp.</div>
+      <div class="titik-dua">:</div>
+      <div class="col-input"><input type="text" id="jumlahRp" placeholder="..." readonly></div>
+    </div>
+  </div>
+
+  <div class="right-column">
+    <div class="label-row">
+      <div class="col-label">Nomor</div>
+      <div class="titik-duaa">:</div>
+      <div class="col-input"><input type="text" placeholder=" "></div>
+    </div>
+    <div class="label-row">
+      <div class="col-label">Diterima tgl.</div>
+      <div class="titik-duaa">:</div>
+      <div class="col-input"><input type="date" id="tanggalHariIni"></div>
+    </div>
+    <div class="label-row">
+      <div class="col-label">Oleh</div>
+      <div class="titik-duaa">:</div>
+      <div class="col-input">
+        <input list="opsi-jabatan" name="oleh" placeholder="Spv Tk. IV Bid. Gudang">
+        <datalist id="opsi-jabatan">
+          <option value="Spv Tk. IV Bid. Gudang">
+          <option value="Asisten Manajer SDM & Umum">
+          <option value="Manajer Administrasi">
+          <option value="Pengawas Logistik">
+          <option value="Staf Keuangan">
+        </datalist>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <table id="tabel-barang">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Nama Barang / Bahan</th>
+        <th>Mata Anggaran</th>
+        <th>Satuan</th>
+        <th>Jumlah</th>
+        <th>Harga Satuan</th>
+        <th>Jumlah Harga</th>
+        <th>Keterangan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+          <td><input type="text" placeholder="Nama Barang"></td>
+
+        <td>
+          <input list="kode-mata-anggaran" id="kodeAnggaran" placeholder="5211 B. Listrik" oninput="tampilkanKodeDanArti()">
+          <datalist id="kode-mata-anggaran">
+            <option value="5211 B. Listrik">
+            <option value="5212 B. Air">
+            <option value="5213 B. Gas">
+            <option value="5241 B. Perlengkapan Kantor">
+            <option value="5242 B. Fotokopi dan Cetakan">
+            <option value="5244 B. Rumah Tangga Kantor">
+            <option value="5245 B. Perlengkapan Kerja">
+            <option value="5246 B. Materai">
+            <option value="5253 B. Partisipasi">
+            <option value="5505 B. Telepon, Telex dan Telegram">
+            <option value="5506 B. Majalah, Surat Kabar & Buku">
+            <option value="1324 Sarana Bangunan Lapangan">
+            <option value="1371 Alat Rumah Tangga Alat Kantor">
+            <option value="1372 Alat Rumah Tangga">
+            <option value="1373 Alat Studio">
+            <option value="4371 Bahan & Perlengkapan K3">
+            <option value="4381 Bahan Banjiran">
+            <option value="5504 B. Perlengkapan Komputer">
+          </datalist>
+
+          <!-- Tempat menampilkan hasil kode dan arti -->
+          <div id="hasilAnggaran" style="font-size: 12px; margin-top: 4px; line-height: 1.4;"></div>
+        </td>
+
+        <td>
+          <input list="satuan-opsi" name="satuan" placeholder="satuan">
+          <datalist id="satuan-opsi">
+            <option value="lbr">
+            <option value="bh">
+            <option value="rim">
+            <option value="dus">
+            <option value="btg">
+            <option value="roll">
+            <option value="lusin">
+            <option value="pak">
+            <option value="set">
+            <option value="btl">
+            <option value="psg">
+            <option value="pc">
+            <option value="lsn">
+            <option value="box">
+            <option value="stel">
+            <option value="tbg">
+          </datalist>
+        </td>
+
+        <td><input type="number" placeholder="0"></td>
+        <td><input type="number" placeholder="0" oninput="hitungJumlahHarga(this)"></td>
+        <td><input type="number" placeholder="0" oninput="hitungJumlahHarga(this)"></td>
+        <td><input type="text" placeholder="-"></td>
+      </tr>
+      
+      <tr>
+        <td colspan="6"><strong>Jumlah</strong></td>
+        <td colspan="2"><input type="text" id="totalJumlahHarga" placeholder="Total Harga" readonly>
+      </tr>
+    </tbody>
+  </table>
+
+<br><br>
+<table class="signatures" width="100%">
+  <tr>
+    <td>Mengetahui<br>Manajer administrasi</td>
+    <td>Diperiksa oleh<br>Asisten manajer SDM & Umum</td>
+    <td>Diterima oleh<br>Supervisor Tk. IV bidang gudang</td>
+  </tr>
+  <tr>
+    <td style="padding-top: 60px;"><strong><u>SUWIRTA</u></strong><br>NIK. 04245 9871</td>
+    <td style="padding-top: 60px;"><strong><u>AHMAD PERMANA</u></strong><br>NIK. 04254 9874</td>
+    <td style="padding-top: 60px;"><strong><u>NANA SURYANA</u></strong><br>NIK. 04023 8569</td>
+  </tr>
+</table>
+
+<script>
+  function tambahBaris() {
+    const table = document.getElementById('tabel-barang').getElementsByTagName('tbody')[0];
+    const rowCount = table.rows.length - 1;
+
+    const row = table.insertRow(rowCount);
+    row.innerHTML = `
+      <td>${rowCount + 1}</td>
+      <td><input type="text" placeholder="Nama Barang"></td>
+      <td>
+        <input list="kode-mata-anggaran" placeholder="5211 B. Listrik">
+      </td>
+      <td>
+        <input list="satuan-opsi" placeholder="satuan">
+      </td>
+      <td><input type="number" placeholder="0"></td>
+      <td><input type="number" placeholder="0" oninput="hitungJumlahHarga(this)"></td>
+      <td><input type="number" placeholder="0" oninput="hitungJumlahHarga(this)"></td>
+      <td><input type="text" placeholder="-"></td>
+    `;
+  }
+</script>
+
+<script>
+function hitungJumlahHarga(input) {
+  const row = input.closest('tr');
+  const jumlah = parseFloat(row.cells[4].querySelector('input').value) || 0;
+  const hargaSatuan = parseFloat(row.cells[5].querySelector('input').value) || 0;
+  const jumlahHarga = jumlah * hargaSatuan;
+  row.cells[6].querySelector('input').value = jumlahHarga.toFixed(2);
+
+  updateTotalHarga(); // <--- Tambahkan ini!
+}
+</script>
+<script>
+function updateTotalHarga() {
+  const rows = document.querySelectorAll("#tabel-barang tbody tr");
+  let total = 0;
+
+  for (let i = 0; i < rows.length - 1; i++) {
+    const input = rows[i].cells[6].querySelector('input');
+    const value = parseFloat(input.value) || 0;
+    total += value;
+  }
+
+  // Update total di bagian bawah tabel
+  document.getElementById("totalJumlahHarga").value = total.toFixed(2);
+
+  // Update juga di bagian atas (Jumlah Rp.)
+  const jumlahRpInput = document.getElementById("jumlahRp");
+  if (jumlahRpInput) {
+    jumlahRpInput.value = total.toFixed(2);
+  }
+}
+
+</script>
+<script>
+  function kirimData() {
+    const rows = document.querySelectorAll("#tabel-barang tbody tr");
+    const data = [];
+
+    for (let i = 0; i < rows.length - 1; i++) { // baris terakhir = total
+      const row = rows[i];
+      const item = {
+        no: row.cells[0].innerText,
+        namaBarang: row.cells[1].querySelector("input").value,
+        mataAnggaran: row.cells[2].querySelector("input").value,
+        satuan: row.cells[3].querySelector("input").value,
+        jumlah: row.cells[4].querySelector("input").value,
+        hargaSatuan: row.cells[5].querySelector("input").value,
+        jumlahHarga: row.cells[6].querySelector("input").value,
+        keterangan: row.cells[7].querySelector("input").value,
+      };
+      data.push(item);
+    }
+
+    // Ganti URL di bawah ini dengan URL Web App kamu
+    fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
+      method: "POST",
+      body: JSON.stringify({ items: data }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.text())
+    .then(text => alert("✅ Data berhasil dikirim ke Google Sheets!"))
+    .catch(err => alert("❌ Gagal mengirim: " + err));
+  }
+</script>
+
+<script>
+  function hapusBarisTerakhir() {
+    const table = document.getElementById("tabel-barang").getElementsByTagName("tbody")[0];
+    const rows = table.rows;
+
+    // Pastikan setidaknya ada dua baris: satu data + satu jumlah
+    if (rows.length > 1) {
+      // Hapus baris sebelum baris "Jumlah"
+      table.deleteRow(rows.length - 2);
+
+      // Perbarui nomor urut
+      for (let i = 0; i < rows.length - 1; i++) {
+        rows[i].cells[0].innerText = i + 1;
+      }
+    }
+  }
+
+</script>
+</body>
+</html>
