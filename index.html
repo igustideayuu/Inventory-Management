@@ -422,18 +422,16 @@ function kirimData() {
     };
     data.push(item);
   }
-  
+
   fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
     method: "POST",
+    mode: "no-cors",
     headers: {
-      "Content-Type": "text/plain;charset=utf-8"
+      "Content-Type": "application/json"
     },
-    redirect: "follow", // penting supaya response dari GAS tidak ditolak
     body: JSON.stringify({ items: data })
   })
-
-  .then(res => res.text())
-  .then(text => alert("✅ Data berhasil dikirim ke Google Sheets!"))
+  .then(() => alert("✅ Data berhasil dikirim!"))
   .catch(err => alert("❌ Gagal mengirim: " + err));
 }
 </script>
