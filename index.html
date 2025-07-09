@@ -425,16 +425,20 @@ function kirimData() {
 
   fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
     method: "POST",
-    mode: "no-cors",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json" // INI YANG PENTING
     },
     body: JSON.stringify({ items: data })
   })
-  .then(() => alert("✅ Data berhasil dikirim!"))
+  .then(res => res.text())
+  .then(text => {
+    console.log("Server response:", text);
+    alert("✅ Data berhasil dikirim ke Google Sheets!");
+  })
   .catch(err => alert("❌ Gagal mengirim: " + err));
 }
 </script>
+
 
 <script>
   function hapusBarisTerakhir() {
