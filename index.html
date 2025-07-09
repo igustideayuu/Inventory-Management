@@ -390,37 +390,49 @@ function updateTotalHarga() {
 
 </script>
 <script>
-  function kirimData() {
-    const rows = document.querySelectorAll("#tabel-barang tbody tr");
-    const data = [];
+function kirimData() {
+  const rows = document.querySelectorAll("#tabel-barang tbody tr");
+  const data = [];
 
-    for (let i = 0; i < rows.length - 1; i++) { // baris terakhir = total
-      const row = rows[i];
-      const item = {
-        no: row.cells[0].innerText,
-        namaBarang: row.cells[1].querySelector("input").value,
-        mataAnggaran: row.cells[2].querySelector("input").value,
-        satuan: row.cells[3].querySelector("input").value,
-        jumlah: row.cells[4].querySelector("input").value,
-        hargaSatuan: row.cells[5].querySelector("input").value,
-        jumlahHarga: row.cells[6].querySelector("input").value,
-        keterangan: row.cells[7].querySelector("input").value,
-      };
-      data.push(item);
-    }
+  const formulirNo = document.querySelector('.kanan-atas .kanan-row:nth-child(2) input').value;
+  const pemasok = document.querySelector('input[placeholder="Nama Pemasok"]').value;
+  const total = document.getElementById("totalJumlahHarga").value;
+  const nomor = document.querySelector('.right-column .label-row:nth-child(1) input').value;
+  const tanggalTerima = document.getElementById("tanggalHariIni").value;
+  const namaPenerima = document.querySelector('input[list="opsi-jabatan"]').value;
 
-    // Ganti URL di bawah ini dengan URL Web App kamu
-    fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
-      method: "POST",
-      body: JSON.stringify({ items: data }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(res => res.text())
-    .then(text => alert("✅ Data berhasil dikirim ke Google Sheets!"))
-    .catch(err => alert("❌ Gagal mengirim: " + err));
+  for (let i = 0; i < rows.length - 1; i++) {
+    const row = rows[i];
+    const item = {
+      formulirNo,
+      pemasok,
+      total,
+      nomor,
+      tanggalTerima,
+      namaPenerima,
+      namaBarang: row.cells[1].querySelector("input").value,
+      mataAnggaran: row.cells[2].querySelector("input").value,
+      artiMataAnggaran: "", // opsional, nanti bisa dihitung di Sheets
+      satuan: row.cells[3].querySelector("input").value,
+      jumlahSatuan: row.cells[4].querySelector("input").value,
+      hargaSatuan: row.cells[5].querySelector("input").value,
+      hargaJumlah: row.cells[6].querySelector("input").value,
+      keterangan: row.cells[7].querySelector("input").value
+    };
+    data.push(item);
   }
+
+  fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ items: data })
+  })
+  .then(res => res.text())
+  .then(text => alert("✅ Data berhasil dikirim ke Google Sheets!"))
+  .catch(err => alert("❌ Gagal mengirim: " + err));
+}
 </script>
 
 <script>
