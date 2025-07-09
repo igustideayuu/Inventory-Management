@@ -394,47 +394,31 @@ function kirimData() {
   const rows = document.querySelectorAll("#tabel-barang tbody tr");
   const data = [];
 
-  // Ambil data umum dari form
-  const formulirNo = document.querySelector(".kanan-atas input[placeholder=' ']").value;
-  const pemasok = document.querySelector("input[placeholder='Nama Pemasok']").value;
-  const totalHarga = document.getElementById("totalJumlahHarga").value;
-  const tanggalTerima = document.getElementById("tanggalHariIni").value;
-  const namaPenerima = document.querySelector("input[list='opsi-jabatan']").value;
-  const nomor = document.querySelectorAll(".kanan-atas input")[1].value;
-
   for (let i = 0; i < rows.length - 1; i++) {
     const row = rows[i];
     const item = {
-      formulirNo: formulirNo,
-      pemasok: pemasok,
-      total: totalHarga,
-      nomor: nomor,
-      tanggalTerima: tanggalTerima,
-      namaPenerima: namaPenerima,
-
+      no: row.cells[0].innerText,
       namaBarang: row.cells[1].querySelector("input").value,
       mataAnggaran: row.cells[2].querySelector("input").value,
       satuan: row.cells[3].querySelector("input").value,
       jumlah: row.cells[4].querySelector("input").value,
       hargaSatuan: row.cells[5].querySelector("input").value,
       jumlahHarga: row.cells[6].querySelector("input").value,
-      keterangan: row.cells[7].querySelector("input").value
+      keterangan: row.cells[7].querySelector("input").value,
     };
     data.push(item);
   }
-  
-  fetch("https://script.google.com/macros/s/AKfycbyo2LF89PSGuuywd-ed5ehFrU7_XwiRXusDbnpmvVGVcOV8wQC29LfvoBoJ8bBM112V/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    redirect: "follow", // penting supaya response dari GAS tidak ditolak
-    body: JSON.stringify({ items: data })
-  })
 
-  .then(res => res.text())
-  .then(text => alert("✅ Data berhasil dikirim ke Google Sheets!"))
-  .catch(err => alert("❌ Gagal mengirim: " + err));
+  fetch("https://pjtdua-9a124-default-rtdb.asia-southeast1.firebasedatabase.app/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => res.json())
+  .then(() => alert("✅ Data berhasil disimpan ke Firebase!"))
+  .catch(err => alert("❌ Gagal menyimpan: " + err));
 }
 </script>
 
